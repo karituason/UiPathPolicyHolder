@@ -1,0 +1,9 @@
+Main Workflow
+
+1. Extract Online Policy Holders
+	HolderFileName - PolicyHolders.xlsx
+	HolderFolderName - data
+
+2. Filter Policy Holders
+
+3. Email Policy Holders

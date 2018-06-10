@@ -1,0 +1,14 @@
+{
+  "name": "PolicyReminderProject",
+  "description": "Blank Project",
+  "main": "Main.xaml",
+  "dependencies": {},
+  "excludedData": [
+    "Private:*",
+    "*password*"
+  ],
+  "toolVersion": "18.2",
+  "projectVersion": "1.0.6734.42861",
+  "packOptions": {},
+  "runtimeOptions": {}
+}

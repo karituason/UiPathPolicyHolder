@@ -1,0 +1,13 @@
+{
+"DataFolder": "C:\\Users\\kurwhibble\\Documents\\Edureka\\UiPath\\PolicyReminderProject\\PolicyReminderProject\\data",
+"DataFileName": "PolicyHolders.xlsx",
+"UseMock": "TRUE",
+"MockEmail": "i.your.empress@gmail.com",
+"MockAmount": "10",
+"DateRange": "1",
+"PolicyHolderAmount": "100",
+"DateWithin": "3",
+"QueueFolder": "_queue",
+"QueueFileName": "FilteredHolders.xlsx",
+"ManagerEmail": "i.your.empress@gmail.com"
+}
