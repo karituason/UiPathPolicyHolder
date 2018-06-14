@@ -1,13 +1,13 @@
 {
-"DataFolder": "C:\\Users\\kurwhibble\\Documents\\Edureka\\UiPath\\PolicyReminderProject\\PolicyReminderProject\\data",
+"SheetName": "data","DataFolder": "C:\\Users\\karit\\Desktop\\UiPathPolicyHolder-master\\PolicyReminderProject\\data",
 "DataFileName": "PolicyHolders.xlsx",
 "UseMock": "TRUE",
-"MockEmail": "i.your.empress@gmail.com",
+"MockEmail": "uidummyworker@gmail.com",
 "MockAmount": "10",
 "DateRange": "1",
 "PolicyHolderAmount": "100",
 "DateWithin": "3",
-"QueueFolder": "_queue",
+"QueueFolder": "C:\\Users\\karit\\Desktop\\UiPathPolicyHolder-master\\PolicyReminderProject\\data",
 "QueueFileName": "FilteredHolders.xlsx",
-"ManagerEmail": "i.your.empress@gmail.com"
+"ManagerEmail": "uidummymanager@gmail.com"
 }

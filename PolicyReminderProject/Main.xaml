@@ -60,6 +60,7 @@
       <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
       <AssemblyReference>Newtonsoft.Json</AssemblyReference>
       <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
+      <AssemblyReference>UiPath.IntelligentOCR</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
   <Flowchart sap2010:WorkflowViewState.IdRef="Flowchart_1">
@@ -74,6 +75,7 @@
       <Variable x:TypeArguments="x:Boolean" Name="CUseMock" />
       <Variable x:TypeArguments="x:String" Name="CDataFileName" />
       <Variable x:TypeArguments="x:String" Name="CDataFolder" />
+      <Variable x:TypeArguments="x:String" Name="CSheetName" />
       <Variable x:TypeArguments="x:Int32" Name="CDateRange" />
     </Flowchart.Variables>
     <Flowchart.StartNode>
@@ -84,7 +86,15 @@
             <Variable x:TypeArguments="njl:JObject" Name="JConfigData" />
           </Sequence.Variables>
           <ui:ReadTextFile Content="[ConfigText]" DisplayName="Read text file" FileName="config.txt" sap2010:WorkflowViewState.IdRef="ReadTextFile_1" />
-          <ui:DeserializeJson x:TypeArguments="njl:JObject" DisplayName="Deserialize json" sap2010:WorkflowViewState.IdRef="DeserializeJson`1_1" JsonObject="[JConfigData]" JsonString="[ConfigText]" />
+          <ui:DeserializeJson x:TypeArguments="njl:JObject" DisplayName="Deserialize json" sap2010:WorkflowViewState.IdRef="DeserializeJson`1_2" JsonObject="[JConfigData]" JsonString="[ConfigText]" />
+          <Assign sap2010:WorkflowViewState.IdRef="Assign_12">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[CSheetName]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[JConfigData("SheetName").ToString]</InArgument>
+            </Assign.Value>
+          </Assign>
           <Assign sap2010:WorkflowViewState.IdRef="Assign_2">
             <Assign.To>
               <OutArgument x:TypeArguments="x:String">[CDataFolder]</OutArgument>
@@ -99,14 +109,6 @@
             </Assign.To>
             <Assign.Value>
               <InArgument x:TypeArguments="x:String">[JConfigData("DataFileName").ToString]</InArgument>
-            </Assign.Value>
-          </Assign>
-          <Assign sap2010:WorkflowViewState.IdRef="Assign_11">
-            <Assign.To>
-              <OutArgument x:TypeArguments="x:Int32">[CDateRange]</OutArgument>
-            </Assign.To>
-            <Assign.Value>
-              <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32(JConfigData("DateRange").ToString)]</InArgument>
             </Assign.Value>
           </Assign>
           <Assign sap2010:WorkflowViewState.IdRef="Assign_4">
@@ -173,7 +175,15 @@
               <InArgument x:TypeArguments="x:String">[JConfigData("ManagerEmail").ToString]</InArgument>
             </Assign.Value>
           </Assign>
-          <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[CDataFolder + &quot; &quot; +  CDataFileName +&quot; &quot; + CUseMock.ToString +&quot; &quot; + CMockEmail +&quot; &quot; + CMockAmount.ToString +&quot; &quot; + CPolicyHolderAmount.ToString +&quot; &quot; + CDateWithin.ToString +&quot; &quot; + CQueueFolder +&quot; &quot; + CQueueFileName +&quot; &quot; + CManagerEmail]" />
+          <Assign sap2010:WorkflowViewState.IdRef="Assign_13">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Int32">[CDateRange]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32(JConfigData("DateRange").ToString)]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <ui:LogMessage DisplayName="Log message" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[CDateRange.ToString + &quot; &quot; + CSheetName +&quot; &quot;+ CDataFolder + &quot; &quot; +  CDataFileName +&quot; &quot; + CUseMock.ToString +&quot; &quot; + CMockEmail +&quot; &quot; + CMockAmount.ToString +&quot; &quot; + CPolicyHolderAmount.ToString +&quot; &quot; + CDateWithin.ToString +&quot; &quot; + CQueueFolder +&quot; &quot; + CQueueFileName +&quot; &quot; + CManagerEmail]" />
         </Sequence>
         <FlowStep.Next>
           <FlowStep x:Name="__ReferenceID1" sap2010:WorkflowViewState.IdRef="FlowStep_2">
@@ -196,7 +206,8 @@
                     <InArgument x:TypeArguments="x:String" x:Key="CDataFileName">[CDataFileName]</InArgument>
                     <InArgument x:TypeArguments="x:String" x:Key="CFilteredFolder">[CQueueFolder]</InArgument>
                     <InArgument x:TypeArguments="x:String" x:Key="CFilteredFileName">[CQueueFileName]</InArgument>
-                    <InArgument x:TypeArguments="x:Int32" x:Key="DateRange">[CDateRange]</InArgument>
+                    <InArgument x:TypeArguments="x:Int32" x:Key="DateRange">[CDateWithin]</InArgument>
+                    <InArgument x:TypeArguments="x:String" x:Key="SheetName">[CSheetName]</InArgument>
                   </ui:InvokeWorkflowFile.Arguments>
                 </ui:InvokeWorkflowFile>
               </FlowStep>
@@ -208,15 +219,15 @@
     <x:Reference>__ReferenceID0</x:Reference>
     <x:Reference>__ReferenceID1</x:Reference>
     <x:Reference>__ReferenceID2</x:Reference>
-    <sads:DebugSymbol.Symbol>d2JDOlxVc2Vyc1xrdXJ3aGliYmxlXERvY3VtZW50c1xFZHVyZWthXFVpUGF0aFxQb2xpY3lSZW1pbmRlclByb2plY3RcUG9saWN5UmVtaW5kZXJQcm9qZWN0XE1haW4ueGFtbDtBA9QBDwIBAVEJsQEUAgEetAENvgElAgEOwQERyQEpAgECVgtWmQECAVxXC1fJAQIBV1gLXxQCAVNgC2cUAgFPaAtvFAIBS3ALdxQCAUd4C38UAgFDgAELhwEUAgE/iAELjwEUAgE7kAELlwEUAgE3mAELnwEUAgEzoAELpwEUAgEvqAELrwEUAgErsAELsAHBAwIBH7kBS7kBWAIBHLoBTLoBWQIBGrwBSrwBVgIBGLYBU7YBaAIBFrcBSrcBVAIBFLgBS7gBVwIBErsBTrsBXQIBELQBwAG0AdsBAgEPwwFQwwFdAgEMxQFUxQFiAgEKxwFNxwFZAgEIxgFWxgFmAgEGxAFSxAFhAgEEwQHDAcEB3QECAQNWWVZlAgFfViRWMgIBXVe4AVfGAQIBWledAVesAQIBWF02XVoCAVZaN1pEAgFUZTZlXAIBUmI3YkYCAVBtNW1pAgFOajZqQgIBTHU3dWsCAUpyOHJCAgFIfTZ9WQIBRno3ekMCAUSFATWFAWoCAUKCATaCAUMCAUCNATWNAXICAT6KATaKAUsCATyVATWVAWoCATqSATaSAUMCATidATadAVsCATaaATeaAUUCATSlATalAV0CATKiATeiAUcCATCtATatAVwCAS6qATeqAUYCASywAXiwAb4DAgEg</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d1BDOlxVc2Vyc1xrYXJpdFxEZXNrdG9wXFVpUGF0aFBvbGljeUhvbGRlci1tYXN0ZXJcUG9saWN5UmVtaW5kZXJQcm9qZWN0XE1haW4ueGFtbD9CA98BDwIBAVMJuwEUAgEgvgENyAElAgEQywER1AEpAgECWAtYmQECAWRZC1nJAQIBX1oLYRQCAVtiC2kUAgFXagtxFAIBU3ILeRQCAU96C4EBFAIBS4IBC4kBFAIBR4oBC5EBFAIBQ5IBC5kBFAIBP5oBC6EBFAIBO6IBC6kBFAIBN6oBC7EBFAIBM7IBC7kBFAIBL7oBC7oBggQCASHDAUvDAVgCAR7EAUzEAVkCARzGAUrGAVYCARrAAVPAAWgCARjBAUrBAVQCARbCAUvCAVcCARTFAU7FAV0CARK+AcABvgHbAQIBEc0BUM0BXQIBDs8BVM8BYgIBDNEBTdEBWgIBCtIBTtIBWgIBCNABVtABZgIBBs4BUs4BYQIBBMsBwwHLAd0BAgEDWFlYZQIBZ1gkWDICAWVZuAFZxgECAWJZnQFZrAECAWBfNl9ZAgFeXDdcQwIBXGc2Z1oCAVpkN2REAgFYbzZvXAIBVmw3bEYCAVR3N3drAgFSdDh0QgIBUH82f1kCAU58N3xDAgFMhwE1hwFqAgFKhAE2hAFDAgFIjwE1jwFyAgFGjAE2jAFLAgFElwE1lwFqAgFClAE2lAFDAgFAnwE2nwFbAgE+nAE3nAFFAgE8pwE2pwFdAgE6pAE3pAFHAgE4rwE2rwFcAgE2rAE3rAFGAgE0twE1twFpAgEytAE2tAFCAgEwugF4ugH/AwIBIg==</sads:DebugSymbol.Symbol>
   </Flowchart>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
       <sap2010:ViewStateData Id="ReadTextFile_1" sap:VirtualizedContainerService.HintSize="314,59" />
-      <sap2010:ViewStateData Id="DeserializeJson`1_1" sap:VirtualizedContainerService.HintSize="314,60" />
+      <sap2010:ViewStateData Id="DeserializeJson`1_2" sap:VirtualizedContainerService.HintSize="314,60" />
+      <sap2010:ViewStateData Id="Assign_12" sap:VirtualizedContainerService.HintSize="314,60" />
       <sap2010:ViewStateData Id="Assign_2" sap:VirtualizedContainerService.HintSize="314,60" />
       <sap2010:ViewStateData Id="Assign_3" sap:VirtualizedContainerService.HintSize="314,60" />
-      <sap2010:ViewStateData Id="Assign_11" sap:VirtualizedContainerService.HintSize="314,60" />
       <sap2010:ViewStateData Id="Assign_4" sap:VirtualizedContainerService.HintSize="314,60" />
       <sap2010:ViewStateData Id="Assign_5" sap:VirtualizedContainerService.HintSize="314,60" />
       <sap2010:ViewStateData Id="Assign_6" sap:VirtualizedContainerService.HintSize="314,60" />
@@ -225,6 +236,7 @@
       <sap2010:ViewStateData Id="Assign_9" sap:VirtualizedContainerService.HintSize="314,60" />
       <sap2010:ViewStateData Id="Assign_10" sap:VirtualizedContainerService.HintSize="314,60" />
       <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="314,60" />
+      <sap2010:ViewStateData Id="Assign_13" sap:VirtualizedContainerService.HintSize="314,60" />
       <sap2010:ViewStateData Id="LogMessage_1" sap:VirtualizedContainerService.HintSize="314,91" />
       <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="200,51">
         <sap:WorkflowViewStateService.ViewState>
@@ -240,7 +252,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="InvokeWorkflowFile_2" sap:VirtualizedContainerService.HintSize="314,87">
+      <sap2010:ViewStateData Id="InvokeWorkflowFile_2" sap:VirtualizedContainerService.HintSize="200,51">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -283,7 +295,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="Main_1" sap:VirtualizedContainerService.HintSize="654,876" />
+      <sap2010:ViewStateData Id="Main_1" sap:VirtualizedContainerService.HintSize="654,716" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>
